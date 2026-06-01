@@ -23,5 +23,6 @@ namespace OficinaJD.API.Controllers
         {
             return await _context.Modelos.ToListAsync();
         }
+
     }
 }
