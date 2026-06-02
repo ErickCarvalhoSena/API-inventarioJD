@@ -24,5 +24,41 @@ namespace OficinaJD.API.Controllers
             return await _context.Modelos.ToListAsync();
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Modelo>> CadastrarModelo(Modelo modelo)
+        {
+            _context.Modelos.Add(modelo);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(ObterModelos), new {id = modelo.Id }, modelo);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AtualizarModelo(int id, Modelo modelo)
+        {
+            if(id != modelo.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(modelo).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletarModelos(int id)
+        {
+            var modelo = await _context.Modelos.FindAsync(id);
+
+            if(modelo == null)
+            {
+                return NotFound();
+            }
+
+            _context.Modelos.Remove(modelo);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
     }
 }
