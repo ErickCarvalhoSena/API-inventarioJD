@@ -49,7 +49,7 @@ Backend completo com endpoints para gerenciamento de peças e modelos de máquin
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/OficinaJD-API.git
+git clone https://github.com/ErickCarvalhoSena/OficinaJD-API.git
 
 # Entre na pasta
 cd OficinaJD.API
@@ -103,4 +103,4 @@ OficinaJD.API/
 
 ## 🔗 Repositórios Relacionados
 
-- [Frontend — oficina-jd-web](https://github.com/seu-usuario/API-InventarioJD-front)
+- [Frontend — oficina-jd-web](https://github.com/ErickCarvalhoSena/API-InventarioJD-front)
