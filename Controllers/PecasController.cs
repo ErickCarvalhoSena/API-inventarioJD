@@ -148,5 +148,34 @@ namespace OficinaJD.API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<PecaDTO>>> BuscarPecas(
+            [FromQuery] string? codigo,
+            [FromQuery] int? modeloId)
+        {
+            var query = _context.Pecas
+                        .Include(p => p.PecaModelos)
+                        .ThenInclude(pm => pm.Modelo)
+                        .AsQueryable();
+
+            if(!string.IsNullOrEmpty(codigo))
+              query = query.Where(p => p.Codigo.Contains(codigo));
+              
+            if(modeloId.HasValue)
+            query = query.Where(p => p.PecaModelos.Any(pm => pm.ModeloId == modeloId));
+
+            var pecas = await query.ToListAsync();
+
+            return Ok(pecas.Select(p => new PecaDTO
+            {
+                Id = p.Id,
+                Codigo = p.Codigo,
+                Descricao = p.Descricao,
+                Quantidade = p.Quantidade,
+                Localizacao = p.Localizacao,
+                Modelos = p.PecaModelos.Select(pm => pm.Modelo!.Nome).ToList()
+            }));
+        }
     }
 }

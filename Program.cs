@@ -15,9 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
  {
      options.AddPolicy("FrontEnd", policy =>
      {
-         policy.WithOrigins("http://localhost:3000")
-                         .AllowAnyHeader()
-                         .AllowAnyMethod();
+         policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
      });
  });
 
