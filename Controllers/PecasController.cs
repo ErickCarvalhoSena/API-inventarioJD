@@ -14,7 +14,7 @@ namespace OficinaJD.API.Controllers
     {
         private readonly AppDbContext _context;
 
-        public PecasController (AppDbContext context)
+        public PecasController(AppDbContext context)
         {
             _context = context;
         }
@@ -27,18 +27,18 @@ namespace OficinaJD.API.Controllers
                     .ThenInclude(pm => pm.Modelo)
                     .ToListAsync();
 
-                    return Ok(pecas.Select(p => new PecaDTO
-                    {
-                        Id = p.Id,
-                        Codigo = p.Codigo,
-                        Descricao = p.Descricao,
-                        Quantidade = p.Quantidade,
-                        Localizacao = p.Localizacao,
-                        Modelos = p.PecaModelos.Select(pm => pm.Modelo!.Nome).ToList()
-                    }));
+            return Ok(pecas.Select(p => new PecaDTO
+            {
+                Id = p.Id,
+                Codigo = p.Codigo,
+                Descricao = p.Descricao,
+                Quantidade = p.Quantidade,
+                Localizacao = p.Localizacao,
+                Modelos = p.PecaModelos.Select(pm => pm.Modelo!.Nome).ToList()
+            }));
         }
 
-         [HttpGet("{codigo}")]
+        [HttpGet("{codigo}")]
         public async Task<ActionResult<PecaDTO>> ObterPecaPorCodigo(string codigo)
         {
             var peca = await _context.Pecas
@@ -152,18 +152,24 @@ namespace OficinaJD.API.Controllers
         [HttpGet("buscar")]
         public async Task<ActionResult<IEnumerable<PecaDTO>>> BuscarPecas(
             [FromQuery] string? codigo,
+            [FromQuery] string? descricao,
             [FromQuery] int? modeloId)
+
         {
             var query = _context.Pecas
                         .Include(p => p.PecaModelos)
                         .ThenInclude(pm => pm.Modelo)
                         .AsQueryable();
 
-            if(!string.IsNullOrEmpty(codigo))
-              query = query.Where(p => p.Codigo.Contains(codigo));
-              
-            if(modeloId.HasValue)
-            query = query.Where(p => p.PecaModelos.Any(pm => pm.ModeloId == modeloId));
+            if (!string.IsNullOrEmpty(codigo) || !string.IsNullOrEmpty(descricao))
+            {
+                query = query.Where(p =>
+                        (codigo != null && p.Codigo.Contains(codigo)) ||
+                        (descricao != null && p.Descricao != null && p.Descricao.Contains(descricao)));
+            }
+
+            if (modeloId.HasValue)
+                query = query.Where(p => p.PecaModelos.Any(pm => pm.ModeloId == modeloId));
 
             var pecas = await query.ToListAsync();
 
