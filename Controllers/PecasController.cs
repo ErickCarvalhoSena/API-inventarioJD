@@ -164,8 +164,8 @@ namespace OficinaJD.API.Controllers
             if (!string.IsNullOrEmpty(codigo) || !string.IsNullOrEmpty(descricao))
             {
                 query = query.Where(p =>
-                        (codigo != null && p.Codigo.ToLower().Contains(codigo.ToLower())) ||
-                        (descricao != null && p.Descricao != null && p.Descricao.ToLower().Contains(descricao)));
+                        (codigo != null && EF.Functions.ILike(p.Codigo, $"%{codigo}%")) ||
+                         (descricao != null && p.Descricao != null && EF.Functions.ILike(p.Descricao, $"%{descricao}%")));
             }
 
             if (modeloId.HasValue)
