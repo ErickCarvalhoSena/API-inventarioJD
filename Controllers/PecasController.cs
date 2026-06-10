@@ -83,6 +83,10 @@ namespace OficinaJD.API.Controllers
         [HttpPost]
         public async Task<ActionResult<PecaDTO>> CadastrarPeca(CriarPecaDTO dto)
         {
+            var existe = await _context.Pecas.AnyAsync(p => p.Codigo == dto.Codigo);
+            if(existe)
+              return Conflict("Já existe uma peça com esse código.");
+              
             var peca = new Peca
             {
                 Codigo = dto.Codigo,
